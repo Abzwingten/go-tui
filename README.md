@@ -18,6 +18,8 @@ go get -u github.com/gasiordev/go-tui
 
 ### Example
 
+See below sample code and a screenshot of its execution.
+
 ```
 package main
 
@@ -86,3 +88,5 @@ func main() {
     myTUI.Run(os.Stdout, os.Stderr)
 }
 ```
+
+![Example](screenshot.png)
