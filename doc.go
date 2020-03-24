@@ -33,7 +33,7 @@ Example
     }
 
     func main() {
-    	myTUI := tui.NewTUI("Ntree", "Project tree widget", "Mikolaj Gasior")
+    	myTUI := tui.NewTUI("My Project", "Its description", "Author")
     	myTUI.SetOnDraw(getOnTUIDraw(n))
 
     	p0 := myTUI.GetPane()
