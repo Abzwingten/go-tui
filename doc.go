@@ -34,7 +34,7 @@ See below sample with explanation in comments.
     )
 
     // TUI has onDraw event and a function can be attached to it. onDraw is
-    // called when TUI is being drawn, eg. when first started or when 
+    // called when TUI is being drawn, eg. when first started or when
     // terminal window is resized.
     // getOnTUIDraw returns a func that will later be attached in main().
     func getOnTUIDraw(n *NTree) func(*tui.TUI) int {
@@ -102,7 +102,7 @@ See below sample with explanation in comments.
 
         // Attach previously defined func to panes' onDraw event. onDraw
         // handler is called whenever pane is being drawn: on start and
-        // on terminal window resize. 
+        // on terminal window resize.
         p11.SetOnDraw(getOnTUIPaneDraw(n, p11))
         p12.SetOnDraw(getOnTUIPaneDraw(n, p12))
         p21.SetOnDraw(getOnTUIPaneDraw(n, p21))

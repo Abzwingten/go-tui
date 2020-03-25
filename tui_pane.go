@@ -37,46 +37,60 @@ type TUIPane struct {
 	style      *TUIPaneStyle
 }
 
+// GetName returns name
 func (p *TUIPane) GetName() string {
 	return p.name
 }
 
+// GetSplit returns split type (horizontal or vertical)
 func (p *TUIPane) GetSplit() int {
 	return p.split
 }
 
+// GetTUI returns TUI instance that this pane is attached to
 func (p *TUIPane) GetTUI() *TUI {
 	return p.tui
 }
 
+// GetPanes returns pane instances created by split
 func (p *TUIPane) GetPanes() [2]*TUIPane {
 	return p.panes
 }
 
+// GetOnDraw returns onDraw event func
 func (p *TUIPane) GetOnDraw() func(p *TUIPane) int {
 	return p.onDraw
 }
 
+// GetOnIterate returns onIterate event func
 func (p *TUIPane) GetOnIterate() func(p *TUIPane) int {
 	return p.onIterate
 }
 
+// GetStyle returns style instance
 func (p *TUIPane) GetStyle() *TUIPaneStyle {
 	return p.style
 }
 
+// SetOnDraw sets onDraw event func
 func (p *TUIPane) SetOnDraw(f func(p *TUIPane) int) {
 	p.onDraw = f
 }
 
+// SetOnIterate sets onIterate event func
 func (p *TUIPane) SetOnIterate(f func(p *TUIPane) int) {
 	p.onIterate = f
 }
 
+// SetStyle sets style
 func (p *TUIPane) SetStyle(s *TUIPaneStyle) {
 	p.style = s
 }
 
+// Split creates new two panes by splitting this pane either
+// horizontally or vertically.
+// Type, size, size unit are func arguments.
+// Function returns pointers to two new panes.
 func (p *TUIPane) Split(t int, s int, u int) (*TUIPane, *TUIPane) {
 	p.panes[0] = NewTUIPane("Nazwa", p.tui)
 	p.panes[1] = NewTUIPane("Nazwa", p.tui)
@@ -86,38 +100,54 @@ func (p *TUIPane) Split(t int, s int, u int) (*TUIPane, *TUIPane) {
 	return p.panes[0], p.panes[1]
 }
 
+// SplitVertically splits pane vertically. It takes size and size unit
+// as arguments. Only one of the two new panes gets the defined size. If the
+// value is < 0 then it's the left one, when the value is > 0 then it is
+// the right one.
 func (p *TUIPane) SplitVertically(s int, u int) (*TUIPane, *TUIPane) {
 	return p.Split(SPLIT_V, s, u)
 }
 
+// SplitHorizontally splits pane horizontally. It takes size and size unit
+// as arguments. Only one of the two new panes gets the defined size. If the
+// value is < 0 then it's the top one, when the value is > 0 then it is the
+// right one.
 func (p *TUIPane) SplitHorizontally(s int, u int) (*TUIPane, *TUIPane) {
 	return p.Split(SPLIT_H, s, u)
 }
 
+// GetWidth returns pane width
 func (p *TUIPane) GetWidth() int {
 	return p.width
 }
 
+// GetHeight returns pane height
 func (p *TUIPane) GetHeight() int {
 	return p.height
 }
 
+// GetLeft returns x position of pane on terminal window (main pane)
 func (p *TUIPane) GetLeft() int {
 	return p.left
 }
 
+// GetTop returns y position of pane on terminal window (main pane)
 func (p *TUIPane) GetTop() int {
 	return p.top
 }
 
+// GetMinWidth returns minimal width necessary for pane content to work
 func (p *TUIPane) GetMinWidth() int {
 	return p.minWidth
 }
 
+// GetMinHeight returns minimal height necessary for pane content to work
 func (p *TUIPane) GetMinHeight() int {
 	return p.minHeight
 }
 
+// GetTotalMinWidth returns total minimal width necessary for pane to work
+// It is GetMinWidth + width necessary for style
 func (p *TUIPane) GetTotalMinWidth() int {
 	if p.style != nil {
 		return p.minWidth + p.style.H()
@@ -125,6 +155,8 @@ func (p *TUIPane) GetTotalMinWidth() int {
 	return p.minWidth
 }
 
+// GetTotalMinHeight returns total minimal height necessary for pane to work
+// It is GetMinHeight + height necessary for style
 func (p *TUIPane) GetTotalMinHeight() int {
 	if p.style != nil {
 		return p.minHeight + p.style.V()
@@ -132,6 +164,9 @@ func (p *TUIPane) GetTotalMinHeight() int {
 	return p.minHeight
 }
 
+// SetWidth sets width of pane, checks if it's not too small for the content
+// (search for 'minimal width') and calls panes inside to set their width as
+// well.
 func (p *TUIPane) SetWidth(w int) {
 	p.width = w
 	if p.GetTotalMinWidth() > 0 && p.width < p.GetTotalMinWidth() {
@@ -158,6 +193,9 @@ func (p *TUIPane) SetWidth(w int) {
 	}
 }
 
+// SetHeight sets height of pane, checks if it's not too small for the content
+// (search for 'minimal height') and calls panes inside to set their height as
+// well.
 func (p *TUIPane) SetHeight(h int) {
 	p.height = h
 	if p.GetTotalMinHeight() > 0 && p.height < p.GetTotalMinHeight() {
@@ -183,14 +221,20 @@ func (p *TUIPane) SetHeight(h int) {
 	}
 }
 
+// SetMinWidth sets minimal width for pane content (without style)
 func (p *TUIPane) SetMinWidth(w int) {
 	p.minWidth = w
 }
 
+// SetMinHeight sets minimal height for pane content (without style)
 func (p *TUIPane) SetMinHeight(h int) {
 	p.minHeight = h
 }
 
+// getSplitValues is used by Split functions to calculate the width
+// and height of panes. It takes the split type, split value (and its unit)
+// and calculates the size in number of characters. It also checks if the size
+// is not too small as well.
 func (p *TUIPane) getSplitValues() (int, int, bool) {
 	var baseVal int
 	var calcVal int
@@ -220,14 +264,17 @@ func (p *TUIPane) getSplitValues() (int, int, bool) {
 	return 0, 0, false
 }
 
+// SetLeft sets the left value (x position on main pane)
 func (p *TUIPane) SetLeft(l int) {
 	p.left = l
 }
 
+// SetTop sets the top value (y position on main pane)
 func (p *TUIPane) SetTop(t int) {
 	p.top = t
 }
 
+// Write prints string on the pane
 func (p *TUIPane) Write(x int, y int, s string, overwriteStyleFrame bool) {
 	if p.split == SPLIT_NONE || p.tooSmall {
 		if p.style != nil && !overwriteStyleFrame {
@@ -238,6 +285,7 @@ func (p *TUIPane) Write(x int, y int, s string, overwriteStyleFrame bool) {
 	}
 }
 
+// Draw prints the pane on terminal window
 func (p *TUIPane) Draw() int {
 	if p.tooSmall {
 		if p.width > 0 && p.height > 0 {
@@ -261,6 +309,7 @@ func (p *TUIPane) Draw() int {
 	return 1
 }
 
+// Iterate is executed by TUI with every main loop iteration
 func (p *TUIPane) Iterate() int {
 	if p.tooSmall {
 		if p.width > 0 && p.height > 0 {
@@ -281,6 +330,7 @@ func (p *TUIPane) Iterate() int {
 	return 1
 }
 
+// NewTUIPane returns new instance of TUIPane
 func NewTUIPane(n string, t *TUI) *TUIPane {
 	p := &TUIPane{name: n, split: SPLIT_NONE, tui: t}
 	return p
