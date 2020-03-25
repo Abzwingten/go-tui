@@ -9,6 +9,12 @@ import (
 	"time"
 )
 
+// TUI is main interface definition. It has a name, description, author
+// (which are not used anywhere yet), current terminal width and height,
+// pointer to main pane, pointer to a function that is triggered when
+// interface is being drawn (that happens when app is started and when
+// terminal size is changed), and finally pointers to standard output
+// and standard error File instances.
 type TUI struct {
 	name   string
 	desc   string
@@ -21,38 +27,47 @@ type TUI struct {
 	onDraw func(*TUI) int
 }
 
+// GetName returns TUI name
 func (t *TUI) GetName() string {
 	return t.name
 }
 
+// GetDesc returns TUI description
 func (t *TUI) GetDesc() string {
 	return t.desc
 }
 
+// GetAuthor returns TUI author
 func (t *TUI) GetAuthor() string {
 	return t.author
 }
 
+// GetStdout returns stdout property
 func (t *TUI) GetStdout() *os.File {
 	return t.stdout
 }
 
+// GetStderr returns stderr property
 func (t *TUI) GetStderr() *os.File {
 	return t.stderr
 }
 
+// GetPane returns initial/first terminal pane
 func (t *TUI) GetPane() *TUIPane {
 	return t.pane
 }
 
+// GetWidth returns cached terminal width
 func (t *TUI) GetWidth() int {
 	return t.w
 }
 
+// GetHeight returns cached terminal height
 func (t *TUI) GetHeight() int {
 	return t.h
 }
 
+// Run clears the terminal and starts program's main loop
 func (t *TUI) Run(stdout *os.File, stderr *os.File) int {
 	t.stdout = stdout
 	t.stderr = stderr
@@ -66,14 +81,18 @@ func (t *TUI) Run(stdout *os.File, stderr *os.File) int {
 	return 0
 }
 
+// SetOnDraw attaches function that will be triggered when interface is being
+// drawn (what happens on initialisation and terminal resize)
 func (t *TUI) SetOnDraw(f func(*TUI) int) {
 	t.onDraw = f
 }
 
+// SetPane sets the main terminal pane
 func (t *TUI) SetPane(p *TUIPane) {
 	t.pane = p
 }
 
+// Write prints out on the terminal window at a specified position
 func (t *TUI) Write(x int, y int, s string) {
 	fmt.Fprintf(t.stdout, "\u001b[1000A\u001b[1000D")
 	if x > 0 {
@@ -85,6 +104,7 @@ func (t *TUI) Write(x int, y int, s string) {
 	fmt.Fprintf(t.stdout, s)
 }
 
+// getSize gets terminal size by calling stty command
 func (t *TUI) getSize() (int, int, error) {
 	cmd := exec.Command("stty", "size")
 	cmd.Stdin = os.Stdin
@@ -105,6 +125,7 @@ func (t *TUI) getSize() (int, int, error) {
 	return w, h, nil
 }
 
+// refreshSize gets terminal size and caches it
 func (t *TUI) refreshSize() bool {
 	w, h, err := t.getSize()
 	if err != nil {
@@ -121,10 +142,14 @@ func (t *TUI) refreshSize() bool {
 	return false
 }
 
+// clear clears terminal window
 func (t *TUI) clear() {
 	fmt.Fprintf(t.stdout, "\u001b[2J\u001b[1000A\u001b[1000D")
 }
 
+// startMainLoop initialises program's main loop, controls the terminal size,
+// ensures panes are correctly drawn and calls methods attached to their
+// onIterate property
 func (t *TUI) startMainLoop() {
 	for {
 		sizeChanged := t.refreshSize()
@@ -140,6 +165,7 @@ func (t *TUI) startMainLoop() {
 	}
 }
 
+// NewTUI creates new instance of TUI and returns it
 func NewTUI(n string, d string, a string) *TUI {
 	t := &TUI{name: n, desc: d, author: a}
 	p := NewTUIPane("main", t)

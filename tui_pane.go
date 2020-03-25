@@ -11,6 +11,13 @@ const SPLIT_V = 2
 const UNIT_PERCENT = 1
 const UNIT_CHAR = 2
 
+// TUIPane represent a pane within the terminal interface. It has a name.
+// It can be split horizontally or vertically to create another 2 panes.
+// Split can be described as percentage or fixed characters and only one
+// of the panes created from split can have fixed size. Other one is calculated
+// from total width.
+// Pane also have min width, min height, style and have two events: onDraw
+// and onIterate.
 type TUIPane struct {
 	name       string
 	split      int
