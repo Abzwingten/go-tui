@@ -1,7 +1,7 @@
 /*
 Package tui is meant to simplify printing on terminal window by
-specifying certain areas and adding static or dynamic content to it. These
-areas are called panes and they are defined by vertical or horizontal split.
+specifying boxes and adding static or dynamic content to it. These
+boxes are called panes and they are defined by vertical or horizontal split.
 Terminal window is main pane which can be split into another panes, and these
 panes can be split again into next ones, and so on... Just like in another
 great tool which is tmux.
