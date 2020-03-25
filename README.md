@@ -39,7 +39,7 @@ package main
 
 import (
     "os"
-    "github.com/gasiordev/ntree/tui"
+    "github.com/gasiordev/go-tui"
 )
 
 // TUI has onDraw event and a function can be attached to it. onDraw is
