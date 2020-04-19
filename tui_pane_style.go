@@ -126,3 +126,11 @@ func NewTUIPaneStyleMargin() *TUIPaneStyle {
 	}
 	return w
 }
+
+// NewTUIPaneStyleNone returns TUIPaneStyle instance without any frame or margin
+func NewTUIPaneStyleNone() *TUIPaneStyle {
+	w := &TUIPaneStyle{
+		NE: "", NW: "", SE: "", SW: "", E: "", W: "", N: "", S: "",
+	}
+	return w
+}
