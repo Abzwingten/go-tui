@@ -2,6 +2,7 @@ package tui
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"strconv"
@@ -72,10 +73,12 @@ func (t *TUI) Run(stdout *os.File, stderr *os.File) int {
 	t.stdout = stdout
 	t.stderr = stderr
 
+	t.initTTY()
 	t.clear()
 
 	done := make(chan bool)
 	go t.startMainLoop()
+	go t.startStdioLoop()
 	<-done
 
 	return 0
@@ -142,6 +145,22 @@ func (t *TUI) refreshSize() bool {
 	return false
 }
 
+func (t *TUI) initTTY() {
+	cmd1 := exec.Command("stty", "cbreak", "min", "1")
+	cmd1.Stdin = os.Stdin
+	err := cmd1.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	cmd2 := exec.Command("stty", "-echo")
+	cmd2.Stdin = os.Stdin
+	err = cmd2.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 // clear clears terminal window
 func (t *TUI) clear() {
 	fmt.Fprintf(t.stdout, "\u001b[2J\u001b[1000A\u001b[1000D")
@@ -161,7 +180,15 @@ func (t *TUI) startMainLoop() {
 			t.pane.Draw()
 		}
 		t.pane.Iterate()
-		time.Sleep(time.Millisecond * time.Duration(1000))
+		time.Sleep(time.Millisecond * time.Duration(3000))
+	}
+}
+
+func (t *TUI) startStdioLoop() {
+	var b []byte = make([]byte, 1)
+	for {
+		os.Stdin.Read(b)
+		fmt.Println("I got the byte", b, "("+string(b)+")")
 	}
 }
 
