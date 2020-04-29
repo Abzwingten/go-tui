@@ -17,15 +17,16 @@ import (
 // terminal size is changed), and finally pointers to standard output
 // and standard error File instances.
 type TUI struct {
-	name   string
-	desc   string
-	author string
-	stdout *os.File
-	stderr *os.File
-	h      int
-	w      int
-	pane   *TUIPane
-	onDraw func(*TUI) int
+	name      string
+	desc      string
+	author    string
+	stdout    *os.File
+	stderr    *os.File
+	h         int
+	w         int
+	pane      *TUIPane
+	onDraw    func(*TUI) int
+	loopSleep int
 }
 
 // GetName returns TUI name
@@ -68,6 +69,11 @@ func (t *TUI) GetHeight() int {
 	return t.h
 }
 
+// GetLoopSleep returns delay between each iteration of main loop
+func (t *TUI) GetLoopSleep() int {
+	return t.loopSleep
+}
+
 // Run clears the terminal and starts program's main loop
 func (t *TUI) Run(stdout *os.File, stderr *os.File) int {
 	t.stdout = stdout
@@ -93,6 +99,11 @@ func (t *TUI) SetOnDraw(f func(*TUI) int) {
 // SetPane sets the main terminal pane
 func (t *TUI) SetPane(p *TUIPane) {
 	t.pane = p
+}
+
+// SetLoopSleep sets the delay between each iteration of main loop
+func (t *TUI) SetLoopSleep(s int) {
+	t.loopSleep = s
 }
 
 // Write prints out on the terminal window at a specified position
@@ -180,7 +191,7 @@ func (t *TUI) startMainLoop() {
 			t.pane.Draw()
 		}
 		t.pane.Iterate()
-		time.Sleep(time.Millisecond * time.Duration(3000))
+		time.Sleep(time.Millisecond * time.Duration(t.loopSleep))
 	}
 }
 
@@ -197,5 +208,6 @@ func NewTUI(n string, d string, a string) *TUI {
 	t := &TUI{name: n, desc: d, author: a}
 	p := NewTUIPane("main", t)
 	t.SetPane(p)
+	t.SetLoopSleep(1000)
 	return t
 }
