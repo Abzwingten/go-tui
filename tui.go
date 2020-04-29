@@ -17,16 +17,17 @@ import (
 // terminal size is changed), and finally pointers to standard output
 // and standard error File instances.
 type TUI struct {
-	name      string
-	desc      string
-	author    string
-	stdout    *os.File
-	stderr    *os.File
-	h         int
-	w         int
-	pane      *TUIPane
-	onDraw    func(*TUI) int
-	loopSleep int
+	name       string
+	desc       string
+	author     string
+	stdout     *os.File
+	stderr     *os.File
+	h          int
+	w          int
+	pane       *TUIPane
+	onDraw     func(*TUI) int
+	onKeyPress func(*TUI, []byte)
+	loopSleep  int
 }
 
 // GetName returns TUI name
@@ -94,6 +95,11 @@ func (t *TUI) Run(stdout *os.File, stderr *os.File) int {
 // drawn (what happens on initialisation and terminal resize)
 func (t *TUI) SetOnDraw(f func(*TUI) int) {
 	t.onDraw = f
+}
+
+// SetOnKeyPress attaches function that will triggered when key is pressed (a byte is sent onto stdio)
+func (t *TUI) SetOnKeyPress(f func(*TUI, []byte)) {
+	t.onKeyPress = f
 }
 
 // SetPane sets the main terminal pane
@@ -199,7 +205,9 @@ func (t *TUI) startStdioLoop() {
 	var b []byte = make([]byte, 1)
 	for {
 		os.Stdin.Read(b)
-		fmt.Println("I got the byte", b, "("+string(b)+")")
+		if t.onKeyPress != nil {
+			t.onKeyPress(t, b)
+		}
 	}
 }
 
