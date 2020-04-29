@@ -213,6 +213,9 @@ func (t *TUI) startStdioLoop() {
 
 func (t *TUI) Exit(i int) {
 	t.clear()
+	cmd := exec.Command("stty", "sane")
+	cmd.Stdin = os.Stdin
+	cmd.Run()
 	os.Exit(i)
 }
 
