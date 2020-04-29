@@ -211,6 +211,11 @@ func (t *TUI) startStdioLoop() {
 	}
 }
 
+func (t *TUI) Exit(i int) {
+	t.clear()
+	os.Exit(i)
+}
+
 // NewTUI creates new instance of TUI and returns it
 func NewTUI(n string, d string, a string) *TUI {
 	t := &TUI{name: n, desc: d, author: a}
