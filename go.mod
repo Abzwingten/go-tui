@@ -1,3 +1,3 @@
-module github.com/gasiordev/go-tui
+module github.com/gen64/go-tui
 
-go 1.14
+go 1.15

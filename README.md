@@ -1,10 +1,10 @@
-[![GoDoc](https://godoc.org/github.com/gasiordev/go-tui?status.svg)](https://godoc.org/github.com/gasiordev/go-tui)
-[![Build Status](https://travis-ci.org/gasiordev/go-tui.svg?branch=master)](https://travis-ci.org/gasiordev/go-tui)
+[![GoDoc](https://godoc.org/github.com/gen64/go-tui?status.svg)](https://godoc.org/github.com/gen64/go-tui)
+[![Build Status](https://travis-ci.com/gen64/go-tui.svg?branch=master)](https://travis-ci.com/gen64/go-tui)
 
 # go-tui
 
-Package `gasiordev/go-tui` is meant to simplify printing on terminal window by
-specifying boxes and adding static or dynamic content to it. These boxes here 
+Package `gen64/go-tui` is meant to simplify printing on terminal window by
+specifying boxes and adding static or dynamic content to it. These boxes here
 are called panes and they are defined by vertical or horizontal split.
 Terminal window is main pane which can be split into another panes, and these
 panes can be split again into next ones, and so on... Just like in another
@@ -27,7 +27,7 @@ Ensure you have your
 run the following:
 
 ```
-go get -u github.com/gasiordev/go-tui
+go get -u github.com/gen64/go-tui
 ```
 
 ### Example
@@ -39,11 +39,11 @@ package main
 
 import (
     "os"
-    "github.com/gasiordev/go-tui"
+    "github.com/gen64/go-tui"
 )
 
 // TUI has onDraw event and a function can be attached to it. onDraw is
-// called when TUI is being drawn, eg. when first started or when 
+// called when TUI is being drawn, eg. when first started or when
 // terminal window is resized.
 // getOnTUIDraw returns a func that will later be attached in main().
 func getOnTUIDraw(n *NTree) func(*tui.TUI) int {
